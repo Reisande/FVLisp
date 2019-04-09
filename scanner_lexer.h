@@ -1,0 +1,14 @@
+// MML lexer
+#define NUM 1
+#define STR 2
+#define BOOL 3
+#define ADD 4
+#define SUB 5
+#define MUL 6
+#define DIV 7
+#define DEF 8
+#define LET 9
+#define IF 10
+#define LISTL 11
+#define LISTR 12
+#define LAMBDA 13

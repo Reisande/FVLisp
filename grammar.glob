@@ -1,0 +1,6 @@
+DIGEST a9a9a657acf90e3c0c221f8e7a225ab5
+Fgrammar
+mod 7:17 <> MML_Grammar
+def 120:124 MML_Grammar Macro
+R148:151 Coq.Init.Logic <> :type_scope:x_'->'_x not
+R152:152 grammar <> A var
