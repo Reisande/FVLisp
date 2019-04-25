@@ -20,23 +20,20 @@ extern int yylex();
 %token LAMBDA
 
 %%
-
+// insertNode(int value, enum tokens tokenType, char *name, int numChildren, node *children)
 top   : name							     { printf(name); }
 	  | bool		 						 
 	  | list
-	  | lev1 '+' lev1 						 
-	  | lev1 '-' lev1 						 
+	  | '+' top top 						 {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $1; children[1] = $2; $$ = insertNode(-1, ADD, NULL, 2, children); }
+	  | '-' top top 						 
+	  | '*' lev2  lev2					 	 
+	  | '/' lev2 lev2 						 
+	  | '(' top ')'  						 
+	  | '-' lev2
 	  | lev1
 	  | lambda
 	  | macro
-	  ;
-	  
-lev1  : lev2 '*' lev2					 	 
-	  | lev2 '/' lev2 						 
-	  ;
-	  
-lev2  : '(' top ')'  						 
-	  | '-' lev2	 						 
+	  | if	  
 	  | NUM
 	  ;	  
 	  
@@ -54,12 +51,15 @@ bool  : '#' 't'
 	  ;
 	  
 list  : '\'' '(' ')'
-	  | '\'' '(' STR list ')'
-	  | '\'' '(' NUM list ')'
-	  | '\'' '(' CHAR list ')'
-	  | '\'' '(' list list ')'
+	  | '\'' '(' STR ' ' list ')'
+	  | '\'' '(' NUM ' ' list ')'
+	  | '\'' '(' CHAR ' ' list ')'
+	  | '\'' '(' list ' ' list ')'
 	  ; 
 
+if    : '(' "if " '(' top ')' ' ' '(' top ')' ' ' '(' top ')'
+	  ;
+	  
 %%
 
 void yyerror(char *errorMessage) {

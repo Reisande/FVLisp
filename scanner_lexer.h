@@ -7,8 +7,7 @@
 #define MUL 6
 #define DIV 7
 #define DEF 8
-#define LET 9
-#define IF 10
-#define LISTL 11
-#define LISTR 12
-#define LAMBDA 13
+#define IF 9
+#define LISTL 10
+#define LISTR 11
+#define LAMBDA 12

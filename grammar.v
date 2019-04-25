@@ -5,6 +5,7 @@ Require Import Lists.List.
 Require Import Strings.String.
 Require Import ZArith.
 Require Import Coq.Program.Wf.
+Require Import Strings.String.
 Import ListNotations.
 
 Module MML_Grammar.
@@ -12,7 +13,10 @@ Module MML_Grammar.
 (* Macros, implemented as total maps, as described in "Maps" of Software Foundations*)
 
 Definition Macro (A : Type) :=
-  string -> A.
+  string -> A .
+
+Definition t_empty {A:Type} (v : A) : Macro A :=
+  (fun _ => v).
 
 (* Lambdas and conditionals *)
 
@@ -68,8 +72,8 @@ Fixpoint evalCom (c : command) : value :=
   | Num n => VNum n
   | Plus (Num n1) (Num n2) => VNum (n1 + n2)
   | Minus (Num n1) (Num n2) => VNum (n1 - n2)
-  | Divide (Num n1) (Num n2) => VNum (n1 * n2)
-  | Multiply (Num n1) (Num n2) => VNum (Z.div n1 n2)
+  | Multiply (Num n1) (Num n2) => VNum (n1 * n2)
+  | Divide (Num n1) (Num n2) => VNum (Z.div n1 n2)
   | Empty => VList []
   | Singleton x => VList [(evalCom x)]
   | Pair member1 member2 => VList [(evalCom member1); (evalCom member2)]
