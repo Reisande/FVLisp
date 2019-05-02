@@ -2,7 +2,7 @@
 // associated with a set of number of children
 
 // are enums constant?
-enum tokens { NUM, STR, BOOL, ADD, SUB, MUL, DIV, DEF, MACRO, IF, LISTL, LISTR, LAMBDA } token;
+enum tokens { NUM, STR, BOOL, ADD, SUB, MUL, DIV, DEF, MACRO, IF, LIST, LAMBDA } token;
 
 typedef struct node {
 	// number of pointers over to the children which act as operands/ nested operators
