@@ -1,4 +1,4 @@
-%{
+X%{
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,7 +31,7 @@ top   : name							     { printf(name); }
           | '(' top ')'  						 { $$ = $2; }
 	  | '-' top                                                      {  node **children = (node**)malloc(sizeof(node*) * 2);  children[0] = 0; children[1] = $2; $$ = insertNode(-1, SUB, NULL, 2, children); }
 	  | lambda                                                       { $$ = $1; }
-	  | macro                                                        { $$ = $1; }
+	  | macro                                               	 { $$ = $1; }
 	  | if	                                                         { $$ = $1; }    
 	  | NUM                                                          { $$ = $1; }
 	  ;	  
