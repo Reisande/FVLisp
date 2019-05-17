@@ -16,8 +16,8 @@ struct closure {
 };
 
 typedef struct value {
-  enum valueType { intVal, string, closureVal, listVal } value;
-  void *pVal;
+  enum valueEnum { intVal, string, closureVal, listVal, boolVal } valueType;
+  void *pVal; // the actual value of the val(int, bool, etc.)
 } value;
 
 struct stateNode {
@@ -26,8 +26,8 @@ struct stateNode {
   stateNode *next;
 };
 
-value process(node *root);
-value processIf(node *root);
+value *process(node *root);
+value *processIf(node *root);
 
 value *processLambda(node *root) {
   return NULL;
@@ -37,9 +37,9 @@ value *processDef(node *root) {
   return NULL;
 }
 
-value processIf(node *root) {
-  value checkVal = process(root->children[0]);
-  if( == 1) {
+value *processIf(node *root) {
+  value *checkVal = process(root->children[0]);
+  if(checkVal->valueType == boolVal && (int)(*(checkVal->pVal)) == 1) {
     return process(root->children[0]);
   }
   else {
@@ -58,46 +58,39 @@ value *processList(node *root) {
   }
 }
 
-// maybe I should change this return type to a specific struct which has a related token type, expecially
-// in the case of handling lambdas, macros, Lists
-value process(node *root) {
+value *process(node *root) {
   switch (root->token) {
+    value *returnVal;
     case NUM:
-      return root->value;
-      break;
+      returnVal->valueType = intVal;
+      returnVal->pVal = &(root->value);
+      return returnVal;
     case STR:
-      printf("%s", root->name);
-      return -1;
-      break;
+      returnVal->valueType = intVal;
+      returnVal->pVal = root->name;
+      return returnVal;
     case BOOL:
-      return token->value;
-      break;
+      returnVal->valueType = boolVal;
+      returnVal->pVal = &(root->value);
+      return returnVal;
     case ADD:
-      return (process(root->children[0]) + process(root->children[1]);
-      break;
+      return (*(process(root->children[0])->pVal) + (*(process(root->children[0])->pVal)));
     case SUB:
-      return (process(root->children[0]) - process(root->children[1]);
-      break;
+      return (*(process(root->children[0])->pVal) - (*(process(root->children[1])->pVal)));
     case MUL:
-      return (process(root->children[0]) * process(root->children[1]);
-      break;
+      return (*(process(root->children[0])->pVal) * (*(process(root->children[1])->pVal)));
     case DIV:
-      return (process(root->children[0]) / process(root->children[1]);
-      break;
+      return (*(process(root->children[0])->pVal) / (*(process(root->children[1])->pVal)));
     case DEF:
       return processDef(root);
-      break;
     case IF:
       return processIf(root);
-      break;
     case LIST:
       return processList(root);
-      break;
     case LAMBDA:
       return processLambda(root);
-      break;
     default:
       // should do nothing, this a stuck value
-      return -1; // should be an error value, but is not a very good one;
+      return NULL; // should be an error value, but is not a very good one;
   }
 }

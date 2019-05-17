@@ -1,4 +1,4 @@
-X%{
+xs%{
 #include <stdio.h>
 #include <stdlib.h>
 

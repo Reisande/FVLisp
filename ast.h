@@ -12,8 +12,7 @@ typedef struct node {
 	struct node **children; // array of children
 	int value; // associated store which holds enum value, corresponding to operands
 	char *name; // in most cases the name string shouldn't be used, only times when this is needed is DEF, STR, LAMBDA(args)
-        int numChildren;
-}node;
+} node;
  
 // value corresponds to numeric value in cases of Num
 // parent should probably be a sentinel node
