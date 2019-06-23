@@ -1,24 +1,24 @@
 #include "ast.h"
 
+typedef struct value {
+  enum valueEnum { intVal, string, closureVal, listVal, boolVal } valueType;
+  void *pVal; // the actual value of the val(int, bool, etc.)
+} value;
+
 typedef struct listNode {
-  int value; // can represent aything, just needs a typecast based off of token type
+  value *Val; // can represent aything, just needs a typecast based off of token type
   struct listNode *next;
   enum tokens token;
   char * name;
 } listNode;
 
-typedef struct closure closure ;
+typedef struct closure closure;
 typedef struct stateNode stateNode;
 
 struct closure {
   node *lambda;
   stateNode *stateVal;
 };
-
-typedef struct value {
-  enum valueEnum { intVal, string, closureVal, listVal, boolVal } valueType;
-  void *pVal; // the actual value of the val(int, bool, etc.)
-} value;
 
 struct stateNode {
   char *name;
@@ -39,7 +39,7 @@ value *processDef(node *root) {
 
 value *processIf(node *root) {
   value *checkVal = process(root->children[0]);
-  if(checkVal->valueType == boolVal && (int)(*(checkVal->pVal)) == 1) {
+  if(checkVal->valueType == boolVal && (*((int*)(checkVal->pVal))) == 1) {
     return process(root->children[0]);
   }
   else {
@@ -50,7 +50,7 @@ value *processIf(node *root) {
 value *processList(node *root) {
   if(root != NULL) {
     listNode *newNode = malloc(sizeof(node));
-    newNode->value = process(root->children[0]);
+    newNode->Val = process(root->children[0]);
     newNode->next = processList(root->children[1]);
   }
   else {
@@ -59,28 +59,41 @@ value *processList(node *root) {
 }
 
 value *process(node *root) {
+  value *returnVal;
+  int intermediaryInt = -99999;
   switch (root->token) {
-    value *returnVal;
     case NUM:
       returnVal->valueType = intVal;
       returnVal->pVal = &(root->value);
-      return returnVal;
+      break;
     case STR:
-      returnVal->valueType = intVal;
+      returnVal->valueType = string;
       returnVal->pVal = root->name;
-      return returnVal;
+      break;
     case BOOL:
       returnVal->valueType = boolVal;
       returnVal->pVal = &(root->value);
-      return returnVal;
+      break;
     case ADD:
-      return (*(process(root->children[0])->pVal) + (*(process(root->children[0])->pVal)));
+      returnVal->valueType = intVal;
+      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) + (*((int *)(process(root->children[0])->pVal))));
+      returnVal->pVal = &intermediaryInt;
+      break;
     case SUB:
-      return (*(process(root->children[0])->pVal) - (*(process(root->children[1])->pVal)));
+      returnVal->valueType = intVal;
+      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) - (*((int *)(process(root->children[0])->pVal))));
+      returnVal->pVal = &intermediaryInt;
+      break;
     case MUL:
-      return (*(process(root->children[0])->pVal) * (*(process(root->children[1])->pVal)));
+      returnVal->valueType = intVal;
+      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) * (*((int *)(process(root->children[0])->pVal))));
+      returnVal->pVal = &intermediaryInt;
+      break;
     case DIV:
-      return (*(process(root->children[0])->pVal) / (*(process(root->children[1])->pVal)));
+      returnVal->valueType = intVal;
+      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) / (*((int *)(process(root->children[0])->pVal))));
+      returnVal->pVal = &intermediaryInt;
+      break;
     case DEF:
       return processDef(root);
     case IF:
@@ -93,4 +106,5 @@ value *process(node *root) {
       // should do nothing, this a stuck value
       return NULL; // should be an error value, but is not a very good one;
   }
+  return returnVal;
 }
