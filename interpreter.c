@@ -30,11 +30,52 @@ struct closure {
   stateNode *stateVal;
 };
 
+// I am also not going to implement lexical scoping, at least not yet. Evaluation
+// will just be passing around this single stateNode around, adding to it as values
+// are found. Since Scheme is garbage collected, I won't allow users to have direct
+// access to memory addresses, so a stateNode will only have access to the variables
+// the user declares
 struct stateNode {
   char *name;
-  value Val;
+  value *Val;
   stateNode *next;
 };
+
+// finds the value a name is mapped to 
+value *findValueInState(char *argName, stateNode *state) {
+	if(stateNode != NULL && argName != NULL) {
+		if(strcmp(argName, state->name)) {
+			return state->Val;
+		}
+		else {
+			return findNames(argName, state->next);
+		}
+	}
+	else {
+		return NULL;
+	}
+}
+
+// checks if a value exists within the state already
+int checkExistingNames(char *argName, stateNode *state) {
+	return findValueInState(argName, state) == NULL ? 0 : 1;
+}
+
+void expandState(char *argName, value *insertValue, stateNode *currentState) {
+	stateNode *newNode = (stateNode *) malloc(sizeof(stateNode));
+	newNode->Val = insertValue;
+	newNode->nextNode = NULL;
+	if(currentState != NULL) {
+		stateNode *currentNode = currentState;
+		while(currentNode->next != NULL) {
+			currentNode = currentNode->nextNode;
+		}
+		currentNode->nextNode = newNode;
+	}
+	else {
+		currentNode = newNode;
+	}
+}
 
 value *process(node *root);
 value *processIf(node *root);
@@ -44,6 +85,7 @@ value *processDef(node *root) {
 	// If it is, it will be a type error, because shadowing existing values seems
 	// unnecessarily complicated
 	if(process(root->children[0]) == stringVal) {
+		// TODO: add value to state
 		value *returnDefVal;
 		returnDefVal->valueType = defVal;
 		returnDefVal->pVal = process(root->children[1]);
@@ -86,6 +128,10 @@ value *_processList(node *root) {
 value *process(node *root, stateNode *state) {
   value *returnVal = (value *) malloc(sizeof(value));
   int intermediaryInt = 0; // default value TODO: make a wrapper option struct
+	if(state == NULL) {
+		// builds a state by creating a head node
+		state = (stateNode *) malloc(sizeof(stateNode));
+	}
 	if(root != NULL) {
 		switch (root->token) {
     case NUM:
