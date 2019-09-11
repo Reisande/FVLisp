@@ -1,4 +1,6 @@
 #include "ast.h"
+#include <string.h>
+#include <stdio.h>
 
 // Change values to custom type
 typedef struct value {
@@ -21,15 +23,6 @@ typedef struct lambdaNode {
 	char *argument;
 } lambdaNode;											
 
-typedef struct closure closure;
-typedef struct stateNode stateNode;
-
-// TODO: why did I have closures/state again?
-struct closure {
-  node *lambda;
-  stateNode *stateVal;
-};
-
 // I am also not going to implement lexical scoping, at least not yet. Evaluation
 // will just be passing around this single stateNode around, adding to it as values
 // are found. Since Scheme is garbage collected, I won't allow users to have direct
@@ -38,17 +31,17 @@ struct closure {
 struct stateNode {
   char *name;
   value *Val;
-  stateNode *next;
+  stateNode *nextNode;
 };
 
 // finds the value a name is mapped to 
 value *findValueInState(char *argName, stateNode *state) {
-	if(stateNode != NULL && argName != NULL) {
-		if(strcmp(argName, state->name)) {
+	if(state != NULL && argName != NULL) {
+		if(strcmp(argName, state->name) == 0) {
 			return state->Val;
 		}
 		else {
-			return findNames(argName, state->next);
+			return findValueInState(argName, state->nextNode);
 		}
 	}
 	else {
@@ -58,7 +51,7 @@ value *findValueInState(char *argName, stateNode *state) {
 
 // checks if a value exists within the state already
 int checkExistingNames(char *argName, stateNode *state) {
-	return findValueInState(argName, state) == NULL ? 0 : 1;
+	return (findValueInState(argName, state) == NULL) ? 0 : 1;
 }
 
 void expandState(char *argName, value *insertValue, stateNode *currentState) {
@@ -67,50 +60,50 @@ void expandState(char *argName, value *insertValue, stateNode *currentState) {
 	newNode->nextNode = NULL;
 	if(currentState != NULL) {
 		stateNode *currentNode = currentState;
-		while(currentNode->next != NULL) {
+		while(currentNode->nextNode != NULL) {
 			currentNode = currentNode->nextNode;
 		}
 		currentNode->nextNode = newNode;
 	}
 	else {
-		currentNode = newNode;
+		currentState = newNode;
 	}
 }
 
-value *process(node *root);
-value *processIf(node *root);
+value *process(node *root, stateNode *state);
+value *processIf(node *root, stateNode *state);
 
-value *processDef(node *root) {
+value *processDef(node *root, stateNode *state) {
 	// TODO: check that the new value is not reassigning already assigned value.
 	// If it is, it will be a type error, because shadowing existing values seems
 	// unnecessarily complicated
-	if(process(root->children[0]) == stringVal) {
-		// TODO: add value to state
+	if(checkExistingNames(root->name, state) != 0) {
 		value *returnDefVal;
 		returnDefVal->valueType = defVal;
-		returnDefVal->pVal = process(root->children[1]);
+		returnDefVal->pVal = process(root->children[0], state);
+		expandState(root->children[0]->name, (value *)(returnDefVal->pVal), state);
 		return returnDefVal;
 	}
-	else {
+	else {		
 		return NULL;
 	}
 }
 
-value *processIf(node *root) {
-  value *checkVal = process(root->children[0]);
+value *processIf(node *root, stateNode *state) {
+  value *checkVal = process(root->children[0], state);
   if(checkVal->valueType == boolVal && (*((int*)(checkVal->pVal))) == 1) {
-    return process(root->children[0]);
+    return process(root->children[0], state);
   }
   else {
-    return process(root->children[1]);
+    return process(root->children[1], state);
   }
 }
 
-listNode *processList(node *root) {
+listNode *processList(node *root, stateNode *state) {
   if(root != NULL) {
     listNode *newNode = malloc(sizeof(node));
-    newNode->Val = process(root->children[0]);
-    newNode->next = processList(root->children[1]);
+    newNode->Val = process(root->children[0], state);
+    newNode->next = processList(root->children[1], state);
 		return newNode;
   }
   else {
@@ -118,11 +111,23 @@ listNode *processList(node *root) {
   }
 }
 
-value *_processList(node *root) {
+value *_processList(node *root, stateNode *state) {
 	value *headNode = (value *) malloc(sizeof(value));
   headNode->valueType = listVal;
-  headNode->pVal = (void *)processList(root);
+  headNode->pVal = (void *)processList(root, state);
 	return headNode;
+}
+
+void replaceValues(node *root, stateNode *state) {
+	
+}
+
+value *processLambda(node *root, stateNode *state, value *argument) {
+	// this function is simple. it is supposed to represent application of
+	// a lambda to another value. Simply recurse through the AST and replace
+	// any nodes with an identical name with a node with the value of the argument
+	
+	return NULL;
 }
 
 value *process(node *root, stateNode *state) {
@@ -148,48 +153,46 @@ value *process(node *root, stateNode *state) {
       break;
     case ADD:
       returnVal->valueType = intVal;
-      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) +
-												 (*((int *)(process(root->children[0])->pVal))));
+      intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) +
+												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
     case SUB:
       returnVal->valueType = intVal;
-      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) -
-												 (*((int *)(process(root->children[0])->pVal))));
+      intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) -
+												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
     case MUL:
       returnVal->valueType = intVal;
-      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) *
-												 (*((int *)(process(root->children[0])->pVal))));
+      intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) *
+												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
     case DIV:
       returnVal->valueType = intVal;
-      intermediaryInt = (*((int *)(process(root->children[0])->pVal)) /
-												 (*((int *)(process(root->children[0])->pVal))));
+      intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) /
+												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
     case DEF:
-      returnVal = processDef(root);
+      returnVal = processDef(root, state);
 			break;
     case IF:
-      returnVal = processIf(root);
+      returnVal = processIf(root, state);
 		  break;
     case LIST:
 			returnVal->valueType = listVal;
-      returnVal->pVal = _processList(root);
+      returnVal->pVal = _processList(root, state);
 			break;
     case LAMBDA:
 			// how would I go about actually applying a lambda to a value?
 			returnVal->valueType = lambdaVal;
-			// TODO: this feels off to me, although I guess it does make sense for
-			// lambdas to be terminals
 			returnVal->pVal = root;
 			break;
     default:
       // should do nothing, this a stuck value
-      returnVal =  NULL; // should be an error value, but is not a very good one;
+      returnVal = NULL; // should be an error value, but is not a very good one;
 		}
 		return returnVal;
 	}
@@ -199,7 +202,6 @@ value *process(node *root, stateNode *state) {
 	}
 }
 
-int main() {
-
+int main() {	
 	return 0;
 }

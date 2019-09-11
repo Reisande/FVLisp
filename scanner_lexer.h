@@ -11,3 +11,4 @@
 #define LISTL 10
 #define LISTR 11
 #define LAMBDA 12
+#define VAR 13
