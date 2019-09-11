@@ -2,12 +2,13 @@
 // associated with a set of number of children
 #include <stdlib.h>
 
-// are enums constant?
 enum tokens { NUM, STR, BOOL, ADD, SUB, MUL, DIV, DEF, IF, LIST, LAMBDA, VAR } token;
 
 typedef struct node {
 	// number of pointers over to the children which act as operands/ nested operators
 	enum tokens token; // type of the node
+
+	int numChildren; // used for recursively replacing variables with values
 	struct node **children;
   // associated store which holds enum value, corresponding to operands
 	// Maybe I should make this an int * so that in variable name cases, the value could just

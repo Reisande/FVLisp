@@ -119,17 +119,39 @@ value *_processList(node *root, stateNode *state) {
 }
 
 void replaceValues(node *root, stateNode *state) {
-	
+	if(state == NULL) {
+		return;
+	}
+	else {
+		if(root->token == VAR && strcmp(state->name, root->name) == 0) {
+			node *replacementNode = (node *) malloc(sizeof(node));
+
+			// TODO: what to do here?
+		}
+		else {
+			int i;
+			for(i = 0; i < root->numChildren; i++) {
+				replaceValues(root->children[i], state);
+			}
+		}
+
+		replaceValues(root, state->next);
+	}
 }
 
 value *processLambda(node *root, stateNode *state, value *argument) {
 	// this function is simple. it is supposed to represent application of
 	// a lambda to another value. Simply recurse through the AST and replace
 	// any nodes with an identical name with a node with the value of the argument
+
+	// this assumes that the parameter has been replaced, if it needs to be replaced
 	
 	return NULL;
 }
 
+// I should probably change this process into two separate process functions:
+// one that parses through the AST and replaces all variables with their values,
+// regardless of correctness, and another which evaluates after processing
 value *process(node *root, stateNode *state) {
   value *returnVal = (value *) malloc(sizeof(value));
   int intermediaryInt = 0; // default value TODO: make a wrapper option struct

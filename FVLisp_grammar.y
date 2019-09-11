@@ -65,7 +65,6 @@ if    : '(' "if " '(' top ')' ' ' '(' top ')' ' ' '(' top ')'              {  no
 variable : STR { char *name = $1; $$ = insertNode(-1, VAR, name, 0, NULL); }
 ;
 
-
 %%
 
 void yyerror(char *errorMessage) {
