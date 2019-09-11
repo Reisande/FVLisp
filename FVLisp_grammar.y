@@ -7,21 +7,24 @@ extern int yylex();
 %}
 
 %union {
-	int d;
+	int digit;
 	char *name;
-	int b;
-	char c;
+	int bool;
+	char character;
+	Node *node;
 	}
 
-%token <d> NUM
-%token <c> CHAR
+%token <digit> NUM
+%token <character> CHAR
 %token <name> STR
 %token <name> DEF
 %token LAMBDA
 
+%type <node> top macro lambda list if name variable bool
+
 %%
 
-top   : name							     { printf(name); }
+top   : name							     { $$ = $1; }
 | bool		 					 { $$ = $1; }	 
 | list                                                         { $$ = $1; }
 | '+' top top 						 {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $2; children[1] = $3; $$ = insertNode(-1, ADD, NULL, 2, children); }
@@ -36,9 +39,10 @@ top   : name							     { printf(name); }
 | NUM                                                          { $$ = $1; }
 | variable                                                     { $$ = $1; }
 ;	  
-	  
+
 macro : DEF ' ' '(' variable ')' ' ' '(' top ')'                          {  node **children = (node**)malloc(sizeof(node*)); children[0] = $8; char *name = $4; $$ = insertNode(-1, DEF, name, 1, children); }
-| DEF ' '  '(' name variable ')' '(' top')'                        {  char *name = $4/*Function name */; node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $5/*parameter*/; children[1] = $8; $$ = insertNode(-1, DEF, name, 2, children); }
+// change the name member to be a child node of the node
+| DEF ' '  '(' variable variable ')' '(' top')'                        {  char *name = $4/*Function name */; node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $5/*parameter*/; children[1] = $8; $$ = insertNode(-1, DEF, name, 2, children); }
 ;
 	  
 lambda: LAMBDA '(' variable ')' '(' top ')'                               {  node **children = (node**)malloc(sizeof(node*)); children[0] = $6; char *name = $3; $$ = insertNode(-1, LAMBDA, name, 1, children); }

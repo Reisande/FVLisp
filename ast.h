@@ -14,6 +14,7 @@ typedef struct node {
 	// Maybe I should make this an int * so that in variable name cases, the value could just
 	// be a NULL, and when the name is supposed to be a string, then it should be an actual value
 	int value;
+
 	// in most cases the name string shouldn't be used, only times when this is needed is DEF, STR, LAMBDA(args)
 	char *name;
 } node;

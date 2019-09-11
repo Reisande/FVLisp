@@ -118,25 +118,16 @@ value *_processList(node *root, stateNode *state) {
 	return headNode;
 }
 
-void replaceValues(node *root, stateNode *state) {
-	if(state == NULL) {
-		return;
+value *processVar(node *root, stateNode *state) {
+	value *originalVal = findValueInState(root->name, state);
+	if(originalValue != NULL) {
+		value *returnVal = (value *) malloc(sizeof(value));
+		memcpy(returnVal, originalVal, sizeof(value));
+
+		return returnVal;
 	}
 	else {
-		if(root->token == VAR && strcmp(state->name, root->name) == 0) {
-			node *replacementNode = (node *) malloc(sizeof(node));
-
-			// TODO: what to do here?
-		}
-		else {
-			int i;
-			
-			for(i = 0; i < root->numChildren; i++) {
-				replaceValues(root->children[i], state);
-			}
-		}
-
-		replaceValues(root, state->next);
+		return NULL;
 	}
 }
 
@@ -212,6 +203,9 @@ value *process(node *root, stateNode *state) {
 			// how would I go about actually applying a lambda to a value?
 			returnVal->valueType = lambdaVal;
 			returnVal->pVal = root;
+			break;
+		case VAR:
+			returnVal = processVar(root, state);
 			break;
     default:
       // should do nothing, this a stuck value
