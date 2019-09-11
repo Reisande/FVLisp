@@ -130,6 +130,7 @@ void replaceValues(node *root, stateNode *state) {
 		}
 		else {
 			int i;
+			
 			for(i = 0; i < root->numChildren; i++) {
 				replaceValues(root->children[i], state);
 			}
