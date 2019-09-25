@@ -24,8 +24,8 @@ extern int yylex();
 
 %%
 
-top   : name							     { $$ = $1; }
-| bool		 					 { $$ = $1; }	 
+top   : name							     { $$ = insertNode(-1, STR, $1, 0, NULL); }
+| bool		 					 { $$ = insertNode($1, BOOL, NULL, 0, NULL); }	 
 | list                                                         { $$ = $1; }
 | '+' top top 						 {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $2; children[1] = $3; $$ = insertNode(-1, ADD, NULL, 2, children); }
 | '-' top top 						 {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $2; children[1] = $3; $$ = insertNode(-1, SUB, NULL, 2, children); }
@@ -46,8 +46,9 @@ macro : DEF ' ' '(' variable ')' ' ' '(' top ')'                          {  nod
 ;
 	  
 lambda: LAMBDA '(' variable ')' '(' top ')'                               {  node **children = (node**)malloc(sizeof(node*)); children[0] = $6; char *name = $3; $$ = insertNode(-1, LAMBDA, name, 1, children); }
+;
 
-name  : '"' STR '"'                                                           { char *name = $1; $$ = insertNode(-1, STR, name, 0, NULL); }
+name  : '"' STR '"'                                                           { char *insertName = $2; $$ = insertNode(-1, STR, insertName, 0, NULL); }
 ;
 	  
 bool  : '#' 't'                                                       { $$ = insertNode(1, BOOL, NULL, 0, NULL) }
