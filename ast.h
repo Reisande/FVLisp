@@ -2,7 +2,7 @@
 // associated with a set of number of children
 #include <stdlib.h>
 
-enum tokens { NUM, STR, BOOL, ADD, SUB, MUL, DIV, DEF, IF, LIST, LAMBDA, VAR } token;
+enum tokens { NUM, STR, BOOL, ADD, SUB, MUL, DIV, DEF, IF, LIST, LAMBDA, VAR, APP } token;
 
 typedef struct node {
 	// number of pointers over to the children which act as operands/ nested operators

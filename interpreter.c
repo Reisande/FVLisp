@@ -70,6 +70,32 @@ void expandState(char *argName, value *insertValue, stateNode *currentState) {
 	}
 }
 
+stateNode *removeValueFromState(char *argName, stateNode *currentState) {
+	if(currentStateNode == NULL) {
+		return NULL;
+	}
+	else {
+		if(strcmp(currentState->name, argName) == 0) {
+			stateNode *temp = currentState->next;
+			free(currentState);
+
+			return temp;
+		}
+		else {
+			stateNode *temp = currentState;
+			while(currentState->next != NULL &&
+						strcmp(currentState->next->name, argName) != 0) {
+				temp = temp->next;
+			}
+			stateNode *freeNode = temp->next;
+			temp->next = freeNode->next;
+			free(freeNode);
+
+			return currentState;
+		}
+	}
+}
+
 value *process(node *root, stateNode *state);
 value *processIf(node *root, stateNode *state);
 
@@ -137,8 +163,12 @@ value *processLambda(node *root, stateNode *state, value *argument) {
 	// any nodes with an identical name with a node with the value of the argument
 
 	// this assumes that the parameter has been replaced, if it needs to be replaced
-	
-	return NULL;
+	if(root != NULL && argument != NULL) {
+		
+	}
+	else {
+		return NULL;
+	}
 }
 
 // I should probably change this process into two separate process functions:
@@ -200,9 +230,13 @@ value *process(node *root, stateNode *state) {
       returnVal->pVal = _processList(root, state);
 			break;
     case LAMBDA:
-			// how would I go about actually applying a lambda to a value?
 			returnVal->valueType = lambdaVal;
 			returnVal->pVal = root;
+			break;
+		case APP:
+			value *argument = process(root->children[1]);
+			value *lambda = process(root->children[0]);
+			
 			break;
 		case VAR:
 			returnVal = processVar(root, state);
