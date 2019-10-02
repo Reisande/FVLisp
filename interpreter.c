@@ -157,14 +157,18 @@ value *processVar(node *root, stateNode *state) {
 	}
 }
 
-value *processLambda(node *root, stateNode *state, value *argument) {
+// Process lambda is kind of a misnomer; This really just applies an argument
+// to a lambda
+value *processLambda(node *root, value *argument, stateNode *state) {
 	// this function is simple. it is supposed to represent application of
 	// a lambda to another value. Simply recurse through the AST and replace
 	// any nodes with an identical name with a node with the value of the argument
 
 	// this assumes that the parameter has been replaced, if it needs to be replaced
 	if(root != NULL && argument != NULL) {
-		
+		expandState(root->name, argument, state);
+		process(root, state);
+		removeValueFromState(root->name, state);
 	}
 	else {
 		return NULL;
@@ -235,8 +239,7 @@ value *process(node *root, stateNode *state) {
 			break;
 		case APP:
 			value *argument = process(root->children[1]);
-			value *lambda = process(root->children[0]);
-			
+			processLambda(root, argument, state)
 			break;
 		case VAR:
 			returnVal = processVar(root, state);
