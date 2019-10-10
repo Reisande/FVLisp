@@ -12,7 +12,7 @@ typedef struct value {
 typedef struct listNode {
   value *Val; // can represent aything, just needs a typecast based off of token type
   struct listNode *next;
-  enum tokens token;
+  enum nodeTypes nodeType;
   char * name;
 } listNode;
 
@@ -28,11 +28,11 @@ typedef struct lambdaNode {
 // are found. Since Scheme is garbage collected, I won't allow users to have direct
 // access to memory addresses, so a stateNode will only have access to the variables
 // the user declares
-struct stateNode {
+typedef struct stateNode {
   char *name;
   value *Val;
-  stateNode *nextNode;
-};
+  struct stateNode *next;
+} stateNode;
 
 // finds the value a name is mapped to 
 value *findValueInState(char *argName, stateNode *state) {
@@ -41,7 +41,7 @@ value *findValueInState(char *argName, stateNode *state) {
 			return state->Val;
 		}
 		else {
-			return findValueInState(argName, state->nextNode);
+			return findValueInState(argName, state->next);
 		}
 	}
 	else {
@@ -57,13 +57,13 @@ int checkExistingNames(char *argName, stateNode *state) {
 void expandState(char *argName, value *insertValue, stateNode *currentState) {
 	stateNode *newNode = (stateNode *) malloc(sizeof(stateNode));
 	newNode->Val = insertValue;
-	newNode->nextNode = NULL;
+	newNode->next = NULL;
 	if(currentState != NULL) {
 		stateNode *currentNode = currentState;
-		while(currentNode->nextNode != NULL) {
-			currentNode = currentNode->nextNode;
+		while(currentNode->next != NULL) {
+			currentNode = currentNode->next;
 		}
-		currentNode->nextNode = newNode;
+		currentNode->next = newNode;
 	}
 	else {
 		currentState = newNode;
@@ -71,7 +71,7 @@ void expandState(char *argName, value *insertValue, stateNode *currentState) {
 }
 
 stateNode *removeValueFromState(char *argName, stateNode *currentState) {
-	if(currentStateNode == NULL) {
+	if(currentState == NULL) {
 		return NULL;
 	}
 	else {
@@ -146,7 +146,7 @@ value *_processList(node *root, stateNode *state) {
 
 value *processVar(node *root, stateNode *state) {
 	value *originalVal = findValueInState(root->name, state);
-	if(originalValue != NULL) {
+	if(originalVal != NULL) {
 		value *returnVal = (value *) malloc(sizeof(value));
 		memcpy(returnVal, originalVal, sizeof(value));
 
@@ -159,16 +159,22 @@ value *processVar(node *root, stateNode *state) {
 
 // Process lambda is kind of a misnomer; This really just applies an argument
 // to a lambda
-value *processLambda(node *root, value *argument, stateNode *state) {
+value *processLambdaApplication(node *root, value *argument, stateNode *state) {
 	// this function is simple. it is supposed to represent application of
 	// a lambda to another value. Simply recurse through the AST and replace
 	// any nodes with an identical name with a node with the value of the argument
 
 	// this assumes that the parameter has been replaced, if it needs to be replaced
 	if(root != NULL && argument != NULL) {
-		expandState(root->name, argument, state);
+		// TODO: this just pushes the function name onto the stack, not the argument
+		// should I assign an actual, random name to the function name for an anonymous
+		// function?
+		// actually, this should only happen for a lambda/function application, not an
+		// anonymous function macro. So I need to make a separate processLambda and
+		// processApplication
+		expandState(root->children[0], argument, state);
 		process(root, state);
-		removeValueFromState(root->name, state);
+		removeValueFromState(argument, state);
 	}
 	else {
 		return NULL;
@@ -179,69 +185,72 @@ value *processLambda(node *root, value *argument, stateNode *state) {
 // one that parses through the AST and replaces all variables with their values,
 // regardless of correctness, and another which evaluates after processing
 value *process(node *root, stateNode *state) {
-  value *returnVal = (value *) malloc(sizeof(value));
-  int intermediaryInt = 0; // default value TODO: make a wrapper option struct
 	if(state == NULL) {
 		// builds a state by creating a head node
 		state = (stateNode *) malloc(sizeof(stateNode));
 	}
+
 	if(root != NULL) {
-		switch (root->token) {
-    case NUM:
+		value *argument;
+		value *returnVal = (value *) malloc(sizeof(value));
+		int intermediaryInt = 0; // default value TODO: make a wrapper option struct
+			
+		switch (root->nodeType) {
+    case NUMNODE:
       returnVal->valueType = intVal;
       returnVal->pVal = &(root->value);
       break;
-    case STR:
+    case STRNODE:
       returnVal->valueType = stringVal;
       returnVal->pVal = root->name;
       break;
-    case BOOL:
+    case BOOLNODE:
       returnVal->valueType = boolVal;
       returnVal->pVal = &(root->value);
       break;
-    case ADD:
+    case ADDNODE:
       returnVal->valueType = intVal;
       intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) +
 												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
-    case SUB:
+    case SUBNODE:
       returnVal->valueType = intVal;
       intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) -
 												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
-    case MUL:
+    case MULNODE:
       returnVal->valueType = intVal;
       intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) *
 												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
-    case DIV:
+    case DIVNODE:
       returnVal->valueType = intVal;
       intermediaryInt = (*((int *)(process(root->children[0], state)->pVal)) /
 												 (*((int *)(process(root->children[0], state)->pVal))));
       returnVal->pVal = &intermediaryInt;
       break;
-    case DEF:
+    case DEFNODE:
       returnVal = processDef(root, state);
 			break;
-    case IF:
+    case IFNODE:
       returnVal = processIf(root, state);
 		  break;
-    case LIST:
+    case LISTNODE:
 			returnVal->valueType = listVal;
       returnVal->pVal = _processList(root, state);
 			break;
-    case LAMBDA:
+    case LAMBDANODE:
 			returnVal->valueType = lambdaVal;
 			returnVal->pVal = root;
 			break;
-		case APP:
-			value *argument = process(root->children[1]);
-			processLambda(root, argument, state)
+		case APPNODE:
+			argument = process(root->children[1], state);
+			processLambdaApplication(root, argument, state);
 			break;
-		case VAR:
+		case VARNODE:
 			returnVal = processVar(root, state);
 			break;
     default:
@@ -254,8 +263,4 @@ value *process(node *root, stateNode *state) {
 		printf("Some compilation error occurred\n");
 		return NULL;
 	}
-}
-
-int main() {	
-	return 0;
 }

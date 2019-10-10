@@ -2,11 +2,11 @@
 // associated with a set of number of children
 #include <stdlib.h>
 
-enum tokens { NUM, STR, BOOL, ADD, SUB, MUL, DIV, DEF, IF, LIST, LAMBDA, VAR, APP } token;
+enum nodeTypes { NUMNODE, STRNODE, BOOLNODE, ADDNODE, SUBNODE, MULNODE, DIVNODE, DEFNODE, IFNODE, LISTNODE, LAMBDANODE, VARNODE, APPNODE } nodeType;
 
 typedef struct node {
 	// number of pointers over to the children which act as operands/ nested operators
-	enum tokens token; // type of the node
+  enum nodeTypes nodeType; // type of the node
 
 	int numChildren; // used for recursively replacing variables with values
 	struct node **children;
@@ -19,20 +19,4 @@ typedef struct node {
 	char *name;
 } node;
  
-// value corresponds to numeric value in cases of Num
-// parent should probably be a sentinel node
-// name is only used in DEF, STR, LAMBDA(args), otherwise is a null pointer
-node *insertNode(int value, enum tokens tokenType, char *name, int numChildren, node **children) {
-	node *insert = malloc(sizeof(node));
-	insert->token = tokenType;
-	insert->children = malloc(numChildren * sizeof(node));
-	insert->name = name;
-	insert->value = value;
-	
-	int i;
-	for(i = 0; i < numChildren; i++) {
-		insert->children[i] = children[i];
-	}
-	
-	return insert;
-}
+node *insertNode(int value, enum nodeTypes nodeType, char *name, int numChildren, node **children);

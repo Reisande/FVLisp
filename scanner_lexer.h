@@ -1,5 +1,5 @@
-// MML lexer
-#define NUM 1
+// FVLisp lexer
+/*#define NUM 1
 #define STR 2
 #define BOOL 3
 #define ADD 4
@@ -12,3 +12,4 @@
 #define LISTR 11
 #define LAMBDA 12
 #define VAR 13
+*/
