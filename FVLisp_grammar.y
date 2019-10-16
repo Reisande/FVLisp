@@ -13,15 +13,15 @@
   extern int yyparse();
 
   node *topLevel;
-}
+ }
 
 %union {
-	int digit;
-	char *name;
-	int bool;
-	char character;
-	node *astNode;
-	}
+  int digit;
+  char *name;
+  int bool;
+  char character;
+  node *astNode;
+}
 
 %token <digit> NUM BOOL
 %token <character> CHAR
@@ -85,8 +85,8 @@ variable : STR { char *name = $1; $$ = insertNode(-1, VARNODE, name, 0, NULL); }
 %%
 
 void yyerror(const char *errorMessage) {
-	fprintf(stderr, "%s\n", errorMessage);
-	exit(1);
+  fprintf(stderr, "%s\n", errorMessage);
+  exit(1);
 }
 
 int main() {
@@ -97,7 +97,14 @@ int main() {
   
   value *returnValue = process(topLevel, NULL);
 
-  printf("%d %d\n", returnValue->valueType, *(int *)(returnValue->pVal));
-  
+  switch(returnValue->valueType) {
+  case stringVal:
+    printf("%s\n", (char *)(returnValue->pVal));
+    break;
+  default:
+    printf("%d\n", *(int *)(returnValue->pVal));
+    break;
+  }
+
   return 0;
 }
