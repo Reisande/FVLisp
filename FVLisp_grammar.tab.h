@@ -50,15 +50,17 @@ extern int yydebug;
 #include <stdlib.h>
 
 #include "ast.h"
-
+#include "interpreter.h"
+  
   void yyerror(const char *s);
 	
-	// declaration of lexical analyzer
-	extern int yylex();
+  // declaration of lexical analyzer
+  extern int yylex();
+  extern int yyparse();
 
-	node *topLevel;
+  node *topLevel;
 
-#line 62 "FVLisp_grammar.tab.h"
+#line 64 "FVLisp_grammar.tab.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -88,7 +90,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "FVLisp_grammar.y"
+#line 18 "FVLisp_grammar.y"
 
 	int digit;
 	char *name;
@@ -97,7 +99,7 @@ union YYSTYPE
 	node *astNode;
 	
 
-#line 101 "FVLisp_grammar.tab.h"
+#line 103 "FVLisp_grammar.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

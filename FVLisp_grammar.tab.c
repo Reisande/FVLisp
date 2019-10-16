@@ -104,15 +104,17 @@ extern int yydebug;
 #include <stdlib.h>
 
 #include "ast.h"
-
+#include "interpreter.h"
+  
   void yyerror(const char *s);
 	
-	// declaration of lexical analyzer
-	extern int yylex();
+  // declaration of lexical analyzer
+  extern int yylex();
+  extern int yyparse();
 
-	node *topLevel;
+  node *topLevel;
 
-#line 116 "FVLisp_grammar.tab.c"
+#line 118 "FVLisp_grammar.tab.c"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -142,7 +144,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "FVLisp_grammar.y"
+#line 18 "FVLisp_grammar.y"
 
 	int digit;
 	char *name;
@@ -151,7 +153,7 @@ union YYSTYPE
 	node *astNode;
 	
 
-#line 155 "FVLisp_grammar.tab.c"
+#line 157 "FVLisp_grammar.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -401,7 +403,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  35
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   98
+#define YYLAST   87
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  20
@@ -410,7 +412,7 @@ union yyalloc
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  26
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  84
+#define YYNSTATES  68
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   273
@@ -458,9 +460,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    35,    35,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    49,    50,    55,    57,    60,
-      64,    67,    70,    73,    74,    77,    80
+       0,    37,    37,    39,    40,    41,    42,    43,    44,    45,
+      46,    47,    48,    49,    50,    51,    52,    57,    59,    62,
+      66,    69,    72,    75,    76,    79,    82
 };
 #endif
 
@@ -486,10 +488,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -24
+#define YYPACT_NINF -18
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-24)))
+  (!!((Yystate) == (-18)))
 
 #define YYTABLE_NINF -1
 
@@ -500,15 +502,13 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      79,   -24,   -24,   -24,   -12,   -10,    -9,    -8,    -7,    -6,
-       5,    62,    79,     2,    21,   -24,   -24,   -24,   -24,   -24,
-     -24,   -24,   -24,   -24,     6,    16,    79,    79,    79,    79,
-      79,   -24,     7,   -13,     8,   -24,    16,    10,    11,    12,
-      13,    14,    17,    20,   -24,    79,   -24,    -2,    18,    79,
-      79,    79,    79,    19,    26,    27,    28,    29,    79,   -24,
-     -24,   -24,   -24,    31,   -24,   -24,    32,    33,    34,    79,
-      79,    35,   -24,    37,    38,    79,    39,   -24,    40,    43,
-     -24,    79,    45,   -24
+      68,   -18,   -18,   -18,    -8,    -7,    68,    68,    68,    68,
+      -4,    22,    68,     6,    13,   -18,   -18,   -18,   -18,   -18,
+     -18,   -18,   -18,   -18,     9,     9,    68,    68,    68,    68,
+      68,   -18,     1,    51,    -1,   -18,    -2,    14,   -18,   -18,
+     -18,   -18,    24,    26,   -18,    28,   -18,     0,    29,    68,
+      31,   -18,   -18,    68,    32,    30,    68,    35,    68,   -18,
+      37,   -18,    40,    52,   -18,    68,    57,   -18
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -519,19 +519,17 @@ static const yytype_uint8 yydefact[] =
        0,    14,    22,    26,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     2,    12,    16,    11,     3,
        4,     5,    13,    15,     0,     0,     0,     0,     0,     0,
-       0,    23,     0,     0,     0,     1,     0,     0,     0,     0,
-       0,     0,     0,     0,    10,     0,    21,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     6,
-       7,     8,     9,     0,    24,    19,     0,     0,     0,     0,
-       0,     0,    20,     0,     0,     0,     0,    17,     0,     0,
-      18,     0,     0,    25
+       0,    23,     0,     0,     0,     1,     0,     0,     6,     7,
+       8,     9,     0,     0,    10,     0,    21,     0,     0,     0,
+       0,    24,    19,     0,     0,     0,     0,     0,     0,    20,
+       0,    17,     0,     0,    18,     0,     0,    25
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -24,   -24,   -11,   -24,   -24,   -24,   -24,   -24,   -15,   -24,
-     -23
+     -18,   -18,    -6,   -18,   -18,   -18,   -18,   -18,    44,   -18,
+     -17
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -546,30 +544,28 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      32,    33,    37,    44,     3,    45,    24,    25,    34,    26,
-      27,    28,    29,    47,    56,    38,    39,    40,    41,    42,
-      30,    35,     3,    36,    57,    43,    48,    46,    54,    49,
-      50,    51,    52,    53,    55,    11,    58,    63,    59,    60,
-      61,    62,    64,    65,     0,    67,    66,    68,    69,    70,
-      72,    71,    75,    76,    77,     0,    80,    79,    73,    74,
-      81,    83,     0,     0,    78,     1,     2,     0,     3,     4,
-      82,     5,     6,     7,     8,     9,    10,    11,    31,    12,
-       0,    13,     1,     2,     0,     3,     4,     0,     5,     6,
-       7,     8,     9,    10,    11,     0,    12,     0,    13
+      26,    27,    28,    29,     3,    32,    33,    36,    37,    24,
+      25,    30,    34,    35,    47,     3,    11,    53,    46,    48,
+      38,    39,    40,    41,    42,     1,     2,    45,     3,     4,
+      49,     5,     6,     7,     8,     9,    10,    11,    31,    12,
+      50,    13,    51,    55,    52,    54,    59,    57,    56,    58,
+      60,    61,    62,    63,     1,     2,    64,     3,     4,    66,
+       5,     6,     7,     8,     9,    10,    11,    44,    12,    65,
+      13,     1,     2,    67,     3,     4,    43,     5,     6,     7,
+       8,     9,    10,    11,     0,    12,     0,    13
 };
 
 static const yytype_int8 yycheck[] =
 {
-      11,    12,    25,    16,     6,    18,    18,    17,     6,    18,
-      18,    18,    18,    36,    16,    26,    27,    28,    29,    30,
-      15,     0,     6,    17,    47,    18,    16,    19,    43,    18,
-      18,    18,    18,    16,    45,    15,    18,    18,    49,    50,
-      51,    52,    16,    16,    -1,    16,    18,    58,    17,    17,
-      16,    18,    17,    16,    16,    -1,    16,    18,    69,    70,
-      17,    16,    -1,    -1,    75,     3,     4,    -1,     6,     7,
-      81,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      -1,    19,     3,     4,    -1,     6,     7,    -1,     9,    10,
-      11,    12,    13,    14,    15,    -1,    17,    -1,    19
+       6,     7,     8,     9,     6,    11,    12,    24,    25,    17,
+      17,    15,     6,     0,    16,     6,    15,    17,    19,    36,
+      26,    27,    28,    29,    30,     3,     4,    33,     6,     7,
+      16,     9,    10,    11,    12,    13,    14,    15,    16,    17,
+      16,    19,    16,    49,    16,    16,    16,    53,    17,    17,
+      56,    16,    58,    16,     3,     4,    16,     6,     7,    65,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    17,
+      19,     3,     4,    16,     6,     7,    32,     9,    10,    11,
+      12,    13,    14,    15,    -1,    17,    -1,    19
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -578,13 +574,11 @@ static const yytype_uint8 yystos[] =
 {
        0,     3,     4,     6,     7,     9,    10,    11,    12,    13,
       14,    15,    17,    19,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    18,    17,    18,    18,    18,    18,
-      15,    16,    22,    22,     6,     0,    17,    30,    22,    22,
-      22,    22,    22,    18,    16,    18,    19,    30,    16,    18,
-      18,    18,    18,    16,    28,    22,    16,    30,    18,    22,
-      22,    22,    22,    18,    16,    16,    18,    16,    22,    17,
-      17,    18,    16,    22,    22,    17,    16,    16,    22,    18,
-      16,    17,    22,    16
+      27,    28,    29,    30,    17,    17,    22,    22,    22,    22,
+      15,    16,    22,    22,     6,     0,    30,    30,    22,    22,
+      22,    22,    22,    28,    16,    22,    19,    16,    30,    16,
+      16,    16,    16,    17,    16,    22,    17,    22,    17,    16,
+      22,    16,    22,    16,    16,    17,    22,    16
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -598,9 +592,9 @@ static const yytype_uint8 yyr1[] =
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     1,     1,     1,     5,     5,     5,     5,
-       3,     1,     1,     1,     1,     1,     1,     9,    10,     5,
-       7,     3,     1,     2,     5,    12,     1
+       0,     2,     1,     1,     1,     1,     3,     3,     3,     3,
+       3,     1,     1,     1,     1,     1,     1,     7,     8,     4,
+       6,     3,     1,     2,     4,    10,     1
 };
 
 
@@ -1285,157 +1279,157 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 35 "FVLisp_grammar.y"
+#line 37 "FVLisp_grammar.y"
     { printf("start value: %d, %s", (yyvsp[0].astNode)->value, (yyvsp[0].astNode)->name); topLevel = (yyvsp[0].astNode); }
-#line 1291 "FVLisp_grammar.tab.c"
+#line 1285 "FVLisp_grammar.tab.c"
     break;
 
   case 3:
-#line 37 "FVLisp_grammar.y"
+#line 39 "FVLisp_grammar.y"
     { printf("Top name: %s\n", (yyvsp[0].astNode)->name); (yyval.astNode) = insertNode(-1, STRNODE, (yyvsp[0].astNode)->name, 0, NULL); }
-#line 1297 "FVLisp_grammar.tab.c"
+#line 1291 "FVLisp_grammar.tab.c"
     break;
 
   case 4:
-#line 38 "FVLisp_grammar.y"
+#line 40 "FVLisp_grammar.y"
     { (yyval.astNode) = insertNode(((yyvsp[0].astNode))->value, BOOLNODE, NULL, 0, NULL); }
-#line 1303 "FVLisp_grammar.tab.c"
+#line 1297 "FVLisp_grammar.tab.c"
     break;
 
   case 5:
-#line 39 "FVLisp_grammar.y"
+#line 41 "FVLisp_grammar.y"
     { (yyval.astNode) = (yyvsp[0].astNode); }
-#line 1309 "FVLisp_grammar.tab.c"
+#line 1303 "FVLisp_grammar.tab.c"
     break;
 
   case 6:
-#line 40 "FVLisp_grammar.y"
-    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-2].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, ADDNODE, NULL, 2, children); }
-#line 1315 "FVLisp_grammar.tab.c"
+#line 42 "FVLisp_grammar.y"
+    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-1].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, ADDNODE, NULL, 2, children); }
+#line 1309 "FVLisp_grammar.tab.c"
     break;
 
   case 7:
-#line 41 "FVLisp_grammar.y"
-    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-2].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, SUBNODE, NULL, 2, children); }
-#line 1321 "FVLisp_grammar.tab.c"
+#line 43 "FVLisp_grammar.y"
+    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-1].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, SUBNODE, NULL, 2, children); }
+#line 1315 "FVLisp_grammar.tab.c"
     break;
 
   case 8:
-#line 42 "FVLisp_grammar.y"
-    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-2].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, MULNODE, NULL, 2, children); }
-#line 1327 "FVLisp_grammar.tab.c"
+#line 44 "FVLisp_grammar.y"
+    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-1].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, MULNODE, NULL, 2, children); }
+#line 1321 "FVLisp_grammar.tab.c"
     break;
 
   case 9:
-#line 43 "FVLisp_grammar.y"
-    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-2].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, DIVNODE, NULL, 2, children); }
-#line 1333 "FVLisp_grammar.tab.c"
+#line 45 "FVLisp_grammar.y"
+    {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-1].astNode); children[1] = (yyvsp[0].astNode); (yyval.astNode) = insertNode(-1, DIVNODE, NULL, 2, children); }
+#line 1327 "FVLisp_grammar.tab.c"
     break;
 
   case 10:
-#line 44 "FVLisp_grammar.y"
+#line 46 "FVLisp_grammar.y"
     { (yyval.astNode) = (yyvsp[-1].astNode); }
-#line 1339 "FVLisp_grammar.tab.c"
+#line 1333 "FVLisp_grammar.tab.c"
     break;
 
   case 11:
-#line 45 "FVLisp_grammar.y"
+#line 47 "FVLisp_grammar.y"
+    { (yyval.astNode) = (yyvsp[0].astNode); }
+#line 1339 "FVLisp_grammar.tab.c"
+    break;
+
+  case 12:
+#line 48 "FVLisp_grammar.y"
     { (yyval.astNode) = (yyvsp[0].astNode); }
 #line 1345 "FVLisp_grammar.tab.c"
     break;
 
-  case 12:
-#line 46 "FVLisp_grammar.y"
+  case 13:
+#line 49 "FVLisp_grammar.y"
     { (yyval.astNode) = (yyvsp[0].astNode); }
 #line 1351 "FVLisp_grammar.tab.c"
     break;
 
-  case 13:
-#line 47 "FVLisp_grammar.y"
-    { (yyval.astNode) = (yyvsp[0].astNode); }
+  case 14:
+#line 50 "FVLisp_grammar.y"
+    { (yyval.astNode) = insertNode((yyvsp[0].digit), NUMNODE, NULL, 0, NULL); }
 #line 1357 "FVLisp_grammar.tab.c"
     break;
 
-  case 14:
-#line 48 "FVLisp_grammar.y"
-    { (yyval.astNode) = insertNode((yyvsp[0].digit), NUMNODE, NULL, 0, NULL); }
+  case 15:
+#line 51 "FVLisp_grammar.y"
+    { (yyval.astNode) = (yyvsp[0].astNode); }
 #line 1363 "FVLisp_grammar.tab.c"
     break;
 
-  case 15:
-#line 49 "FVLisp_grammar.y"
+  case 16:
+#line 52 "FVLisp_grammar.y"
     { (yyval.astNode) = (yyvsp[0].astNode); }
 #line 1369 "FVLisp_grammar.tab.c"
     break;
 
-  case 16:
-#line 50 "FVLisp_grammar.y"
-    { (yyval.astNode) = (yyvsp[0].astNode); }
+  case 17:
+#line 57 "FVLisp_grammar.y"
+    {  node **children = (node**)malloc(sizeof(node*)); children[0] = (yyvsp[-1].astNode); char *variableName = (yyvsp[-4].astNode)->name; (yyval.astNode) = insertNode(-1, DEFNODE, variableName, 1, children); }
 #line 1375 "FVLisp_grammar.tab.c"
     break;
 
-  case 17:
-#line 55 "FVLisp_grammar.y"
-    {  node **children = (node**)malloc(sizeof(node*)); children[0] = (yyvsp[-1].astNode); char *variableName = (yyvsp[-5].astNode)->name; (yyval.astNode) = insertNode(-1, DEFNODE, variableName, 1, children); }
+  case 18:
+#line 59 "FVLisp_grammar.y"
+    {  char *functionName = (yyvsp[-5].astNode)->name/*Function name */; node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-4].astNode)/*parameter*/; children[1] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, DEFNODE, functionName, 2, children); }
 #line 1381 "FVLisp_grammar.tab.c"
     break;
 
-  case 18:
-#line 57 "FVLisp_grammar.y"
-    {  char *functionName = (yyvsp[-6].astNode)->name/*Function name */; node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-5].astNode)/*parameter*/; children[1] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, DEFNODE, functionName, 2, children); }
+  case 19:
+#line 62 "FVLisp_grammar.y"
+    { node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-2].astNode); children[1] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, APPNODE, NULL, 2, children); }
 #line 1387 "FVLisp_grammar.tab.c"
     break;
 
-  case 19:
-#line 60 "FVLisp_grammar.y"
-    { node **children = (node**)malloc(sizeof(node*) * 2); children[0] = (yyvsp[-3].astNode); children[1] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, APPNODE, NULL, 2, children); }
+  case 20:
+#line 66 "FVLisp_grammar.y"
+    {  node **children = (node**)malloc(sizeof(node*)); children[0] = (yyvsp[-1].astNode); char *name = (yyvsp[-3].astNode)->name; (yyval.astNode) = insertNode(-1, LAMBDANODE, name, 1, children); }
 #line 1393 "FVLisp_grammar.tab.c"
     break;
 
-  case 20:
-#line 64 "FVLisp_grammar.y"
-    {  node **children = (node**)malloc(sizeof(node*)); children[0] = (yyvsp[-1].astNode); char *name = (yyvsp[-4].astNode)->name; (yyval.astNode) = insertNode(-1, LAMBDANODE, name, 1, children); }
+  case 21:
+#line 69 "FVLisp_grammar.y"
+    { char *insertName = (yyvsp[-1].name); printf("Hit name production%s\n",insertName); (yyval.astNode) = insertNode(-1, STRNODE, insertName, 0, NULL); }
 #line 1399 "FVLisp_grammar.tab.c"
     break;
 
-  case 21:
-#line 67 "FVLisp_grammar.y"
-    { char *insertName = (yyvsp[-1].name); printf("Hit name production%s\n",insertName); (yyval.astNode) = insertNode(-1, STRNODE, insertName, 0, NULL); }
+  case 22:
+#line 72 "FVLisp_grammar.y"
+    { (yyval.astNode) = insertNode(yylval.bool, BOOLNODE, NULL, 0, NULL); }
 #line 1405 "FVLisp_grammar.tab.c"
     break;
 
-  case 22:
-#line 70 "FVLisp_grammar.y"
-    { (yyval.astNode) = insertNode(yylval.bool, BOOLNODE, NULL, 0, NULL); }
+  case 23:
+#line 75 "FVLisp_grammar.y"
+    { (yyval.astNode) = insertNode(-1, LISTNODE, NULL, 0, NULL); }
 #line 1411 "FVLisp_grammar.tab.c"
     break;
 
-  case 23:
-#line 73 "FVLisp_grammar.y"
-    { (yyval.astNode) = insertNode(-1, LISTNODE, NULL, 0, NULL); }
+  case 24:
+#line 76 "FVLisp_grammar.y"
+    { node **children = (node**)malloc(sizeof(node*)); children[0] = (yyvsp[-2].astNode); children[1] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, LISTNODE, NULL, 2, children); }
 #line 1417 "FVLisp_grammar.tab.c"
     break;
 
-  case 24:
-#line 74 "FVLisp_grammar.y"
-    { node **children = (node**)malloc(sizeof(node*)); children[0] = (yyvsp[-3].astNode); children[1] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, LISTNODE, NULL, 2, children); }
+  case 25:
+#line 79 "FVLisp_grammar.y"
+    {  node **children = (node**)malloc(sizeof(node*) * 3); children[0] = (yyvsp[-7].astNode); children[1] = (yyvsp[-4].astNode); children[2] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, IFNODE, NULL, 3, children); }
 #line 1423 "FVLisp_grammar.tab.c"
     break;
 
-  case 25:
-#line 77 "FVLisp_grammar.y"
-    {  node **children = (node**)malloc(sizeof(node*) * 3); children[0] = (yyvsp[-9].astNode); children[1] = (yyvsp[-5].astNode); children[2] = (yyvsp[-1].astNode); (yyval.astNode) = insertNode(-1, IFNODE, NULL, 3, children); }
+  case 26:
+#line 82 "FVLisp_grammar.y"
+    { char *name = (yyvsp[0].name); (yyval.astNode) = insertNode(-1, VARNODE, name, 0, NULL); }
 #line 1429 "FVLisp_grammar.tab.c"
     break;
 
-  case 26:
-#line 80 "FVLisp_grammar.y"
-    { char *name = (yyvsp[0].name); (yyval.astNode) = insertNode(-1, VARNODE, name, 0, NULL); }
-#line 1435 "FVLisp_grammar.tab.c"
-    break;
 
-
-#line 1439 "FVLisp_grammar.tab.c"
+#line 1433 "FVLisp_grammar.tab.c"
 
       default: break;
     }
@@ -1667,7 +1661,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 83 "FVLisp_grammar.y"
+#line 85 "FVLisp_grammar.y"
 
 
 void yyerror(const char *errorMessage) {
@@ -1676,10 +1670,14 @@ void yyerror(const char *errorMessage) {
 }
 
 int main() {
-	yylex();
-	//yyparse();
+  yyparse();
 	
-	printf("%s %d\n", topLevel->name, topLevel->value);
-	fflush(NULL);
-	return 0;
+  printf("%s %d\n", topLevel->name, topLevel->value);
+  fflush(NULL);
+  
+  value *returnValue = process(topLevel, NULL);
+
+  printf("%d %d\n", returnValue->valueType, *(int *)(returnValue->pVal));
+  
+  return 0;
 }
