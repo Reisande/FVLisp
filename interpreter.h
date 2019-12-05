@@ -21,15 +21,15 @@ typedef struct lambdaNode {
 	char *argument;
 } lambdaNode;											
 
-// I am also not going to implement lexical scoping, at least not yet. Evaluation
-// will just be passing around this single stateNode around, adding to it as values
-// are found. Since Scheme is garbage collected, I won't allow users to have direct
-// access to memory addresses, so a stateNode will only have access to the variables
-// the user declares
 typedef struct stateNode {
   char *name;
   value *Val;
   struct stateNode *next;
 } stateNode;
 
-value *process(node *root, stateNode *state);
+typedef struct environment {
+  value *Val;
+  stateNode *state;
+} environment;
+
+environment *process(node *root, stateNode *state);

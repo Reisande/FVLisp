@@ -1,0 +1,2 @@
+(def (a) ((lambda (x) (+ x x))))
+(a 3)
