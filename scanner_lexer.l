@@ -15,7 +15,7 @@
 "-"						            { return SUB; }
 "*"						            { return MUL; }
 "/"						            { return DIV; }
-"def"					            { printf("hit\n"); return DEF; }
+"def"					            { return DEF; }
 "if"   					            { return IF; }
 "'"					            { return LISTL; }
 "("                                 { return LPAREN; }

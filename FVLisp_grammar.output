@@ -33,7 +33,7 @@ Grammar
 
    20 application: LPAREN top top LISTR
 
-   21 lambda: LPAREN LAMBDA LPAREN variable LISTR LPAREN top LISTR LISTR
+   21 lambda: LAMBDA variable top
 
    22 name: STR
 
@@ -63,8 +63,8 @@ Terminals, with rules where they appear
     DIV (267) 10
     IF (268) 26
     LISTL (269) 6 26
-    LISTR (270) 11 18 20 21 24 25 26
-    LPAREN (271) 11 18 20 21 24 25 26
+    LISTR (270) 11 18 20 24 25 26
+    LPAREN (271) 11 18 20 24 25 26
     SPACE (272)
     DEF (273) 18 19
     NEWLINE (274) 1 2
@@ -117,25 +117,26 @@ State 0
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    startProduction  go to state 13
-    top_seq          go to state 14
-    top              go to state 15
-    macro            go to state 16
-    application      go to state 17
-    lambda           go to state 18
-    name             go to state 19
-    bool             go to state 20
-    if               go to state 21
-    variable         go to state 22
+    startProduction  go to state 14
+    top_seq          go to state 15
+    top              go to state 16
+    macro            go to state 17
+    application      go to state 18
+    lambda           go to state 19
+    name             go to state 20
+    bool             go to state 21
+    if               go to state 22
+    variable         go to state 23
 
 
 State 1
@@ -168,32 +169,42 @@ State 4
 
 State 5
 
+   21 lambda: LAMBDA . variable top
+
+    VAR  shift, and go to state 4
+
+    variable  go to state 24
+
+
+State 6
+
     7 top: ADD . top top
 
     NUM     shift, and go to state 1
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 23
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 25
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 6
+State 7
 
     8 top: SUB . top top
 
@@ -201,26 +212,27 @@ State 6
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 24
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 26
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 7
+State 8
 
     9 top: MUL . top top
 
@@ -228,26 +240,27 @@ State 7
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 25
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 27
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 8
+State 9
 
    10 top: DIV . top top
 
@@ -255,153 +268,181 @@ State 8
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 26
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
-
-
-State 9
-
-   26 if: IF . LISTL top LISTR LPAREN top LISTR LPAREN top LISTR
-
-    LISTL  shift, and go to state 27
+    top          go to state 28
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
 State 10
 
-    6 top: LISTL . list
+   26 if: IF . LISTL top LISTR LPAREN top LISTR LPAREN top LISTR
 
-    LPAREN  shift, and go to state 28
-
-    list  go to state 29
+    LISTL  shift, and go to state 29
 
 
 State 11
 
+    6 top: LISTL . list
+
+    LPAREN  shift, and go to state 30
+
+    list  go to state 31
+
+
+State 12
+
    11 top: LPAREN . top LISTR
    18 macro: LPAREN . DEF LPAREN variable LISTR LPAREN top LISTR LISTR
    20 application: LPAREN . top top LISTR
-   21 lambda: LPAREN . LAMBDA LPAREN variable LISTR LPAREN top LISTR LISTR
 
     NUM     shift, and go to state 1
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    LAMBDA  shift, and go to state 30
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 31
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 32
 
-    top          go to state 32
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 33
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 12
+State 13
 
    19 macro: DEF . variable top
 
     VAR  shift, and go to state 4
 
-    variable  go to state 33
-
-
-State 13
-
-    0 $accept: startProduction . $end
-
-    $end  shift, and go to state 34
+    variable  go to state 34
 
 
 State 14
 
-    1 startProduction: top_seq . NEWLINE
-    2 top_seq: top_seq . NEWLINE top_seq
+    0 $accept: startProduction . $end
 
-    NEWLINE  shift, and go to state 35
+    $end  shift, and go to state 35
 
 
 State 15
+
+    1 startProduction: top_seq . NEWLINE
+    2 top_seq: top_seq . NEWLINE top_seq
+
+    NEWLINE  shift, and go to state 36
+
+
+State 16
 
     3 top_seq: top .
 
     $default  reduce using rule 3 (top_seq)
 
 
-State 16
+State 17
 
    13 top: macro .
 
     $default  reduce using rule 13 (top)
 
 
-State 17
+State 18
 
    17 top: application .
 
     $default  reduce using rule 17 (top)
 
 
-State 18
+State 19
 
    12 top: lambda .
 
     $default  reduce using rule 12 (top)
 
 
-State 19
+State 20
 
     4 top: name .
 
     $default  reduce using rule 4 (top)
 
 
-State 20
+State 21
 
     5 top: bool .
 
     $default  reduce using rule 5 (top)
 
 
-State 21
+State 22
 
    14 top: if .
 
     $default  reduce using rule 14 (top)
 
 
-State 22
+State 23
 
    16 top: variable .
 
     $default  reduce using rule 16 (top)
 
 
-State 23
+State 24
+
+   21 lambda: LAMBDA variable . top
+
+    NUM     shift, and go to state 1
+    BOOL    shift, and go to state 2
+    STR     shift, and go to state 3
+    VAR     shift, and go to state 4
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
+
+    top          go to state 37
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
+
+
+State 25
 
     7 top: ADD top . top
 
@@ -409,26 +450,27 @@ State 23
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 36
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 38
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 24
+State 26
 
     8 top: SUB top . top
 
@@ -436,26 +478,27 @@ State 24
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 37
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 39
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 25
+State 27
 
     9 top: MUL top . top
 
@@ -463,26 +506,27 @@ State 25
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 38
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 40
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 26
+State 28
 
    10 top: DIV top . top
 
@@ -490,26 +534,27 @@ State 26
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 39
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 41
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 27
+State 29
 
    26 if: IF LISTL . top LISTR LPAREN top LISTR LPAREN top LISTR
 
@@ -517,26 +562,27 @@ State 27
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 40
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 42
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 28
+State 30
 
    24 list: LPAREN . LISTR
    25     | LPAREN . top list LISTR
@@ -545,52 +591,46 @@ State 28
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LISTR   shift, and go to state 41
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LISTR   shift, and go to state 43
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 42
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 44
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 29
+State 31
 
     6 top: LISTL list .
 
     $default  reduce using rule 6 (top)
 
 
-State 30
-
-   21 lambda: LPAREN LAMBDA . LPAREN variable LISTR LPAREN top LISTR LISTR
-
-    LPAREN  shift, and go to state 43
-
-
-State 31
+State 32
 
    18 macro: LPAREN DEF . LPAREN variable LISTR LPAREN top LISTR LISTR
    19      | DEF . variable top
 
     VAR     shift, and go to state 4
-    LPAREN  shift, and go to state 44
+    LPAREN  shift, and go to state 45
 
-    variable  go to state 33
+    variable  go to state 34
 
 
-State 32
+State 33
 
    11 top: LPAREN top . LISTR
    20 application: LPAREN top . top LISTR
@@ -599,27 +639,28 @@ State 32
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LISTR   shift, and go to state 45
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LISTR   shift, and go to state 46
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 46
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 47
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 33
+State 34
 
    19 macro: DEF variable . top
 
@@ -627,33 +668,34 @@ State 33
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 47
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 48
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 34
+State 35
 
     0 $accept: startProduction $end .
 
     $default  accept
 
 
-State 35
+State 36
 
     1 startProduction: top_seq NEWLINE .
     2 top_seq: top_seq NEWLINE . top_seq
@@ -662,89 +704,88 @@ State 35
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
     $default  reduce using rule 1 (startProduction)
 
-    top_seq      go to state 48
-    top          go to state 15
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top_seq      go to state 49
+    top          go to state 16
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 36
+State 37
+
+   21 lambda: LAMBDA variable top .
+
+    $default  reduce using rule 21 (lambda)
+
+
+State 38
 
     7 top: ADD top top .
 
     $default  reduce using rule 7 (top)
 
 
-State 37
+State 39
 
     8 top: SUB top top .
 
     $default  reduce using rule 8 (top)
 
 
-State 38
+State 40
 
     9 top: MUL top top .
 
     $default  reduce using rule 9 (top)
 
 
-State 39
+State 41
 
    10 top: DIV top top .
 
     $default  reduce using rule 10 (top)
 
 
-State 40
+State 42
 
    26 if: IF LISTL top . LISTR LPAREN top LISTR LPAREN top LISTR
 
-    LISTR  shift, and go to state 49
+    LISTR  shift, and go to state 50
 
 
-State 41
+State 43
 
    24 list: LPAREN LISTR .
 
     $default  reduce using rule 24 (list)
 
 
-State 42
+State 44
 
    25 list: LPAREN top . list LISTR
 
-    LPAREN  shift, and go to state 28
+    LPAREN  shift, and go to state 30
 
-    list  go to state 50
-
-
-State 43
-
-   21 lambda: LPAREN LAMBDA LPAREN . variable LISTR LPAREN top LISTR LISTR
-
-    VAR  shift, and go to state 4
-
-    variable  go to state 51
+    list  go to state 51
 
 
-State 44
+State 45
 
    18 macro: LPAREN DEF LPAREN . variable LISTR LPAREN top LISTR LISTR
 
@@ -753,28 +794,28 @@ State 44
     variable  go to state 52
 
 
-State 45
+State 46
 
    11 top: LPAREN top LISTR .
 
     $default  reduce using rule 11 (top)
 
 
-State 46
+State 47
 
    20 application: LPAREN top top . LISTR
 
     LISTR  shift, and go to state 53
 
 
-State 47
+State 48
 
    19 macro: DEF variable top .
 
     $default  reduce using rule 19 (macro)
 
 
-State 48
+State 49
 
     2 top_seq: top_seq . NEWLINE top_seq
     2        | top_seq NEWLINE top_seq .
@@ -782,32 +823,25 @@ State 48
     $default  reduce using rule 2 (top_seq)
 
 
-State 49
+State 50
 
    26 if: IF LISTL top LISTR . LPAREN top LISTR LPAREN top LISTR
 
     LPAREN  shift, and go to state 54
 
 
-State 50
+State 51
 
    25 list: LPAREN top list . LISTR
 
     LISTR  shift, and go to state 55
 
 
-State 51
-
-   21 lambda: LPAREN LAMBDA LPAREN variable . LISTR LPAREN top LISTR LISTR
-
-    LISTR  shift, and go to state 56
-
-
 State 52
 
    18 macro: LPAREN DEF LPAREN variable . LISTR LPAREN top LISTR LISTR
 
-    LISTR  shift, and go to state 57
+    LISTR  shift, and go to state 56
 
 
 State 53
@@ -825,23 +859,24 @@ State 54
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 58
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 57
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
 State 55
@@ -853,53 +888,19 @@ State 55
 
 State 56
 
-   21 lambda: LPAREN LAMBDA LPAREN variable LISTR . LPAREN top LISTR LISTR
+   18 macro: LPAREN DEF LPAREN variable LISTR . LPAREN top LISTR LISTR
 
-    LPAREN  shift, and go to state 59
+    LPAREN  shift, and go to state 58
 
 
 State 57
 
-   18 macro: LPAREN DEF LPAREN variable LISTR . LPAREN top LISTR LISTR
+   26 if: IF LISTL top LISTR LPAREN top . LISTR LPAREN top LISTR
 
-    LPAREN  shift, and go to state 60
+    LISTR  shift, and go to state 59
 
 
 State 58
-
-   26 if: IF LISTL top LISTR LPAREN top . LISTR LPAREN top LISTR
-
-    LISTR  shift, and go to state 61
-
-
-State 59
-
-   21 lambda: LPAREN LAMBDA LPAREN variable LISTR LPAREN . top LISTR LISTR
-
-    NUM     shift, and go to state 1
-    BOOL    shift, and go to state 2
-    STR     shift, and go to state 3
-    VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
-
-    top          go to state 62
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
-
-
-State 60
 
    18 macro: LPAREN DEF LPAREN variable LISTR LPAREN . top LISTR LISTR
 
@@ -907,47 +908,41 @@ State 60
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 63
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
+    top          go to state 60
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 61
+State 59
 
    26 if: IF LISTL top LISTR LPAREN top LISTR . LPAREN top LISTR
 
-    LPAREN  shift, and go to state 64
+    LPAREN  shift, and go to state 61
 
 
-State 62
-
-   21 lambda: LPAREN LAMBDA LPAREN variable LISTR LPAREN top . LISTR LISTR
-
-    LISTR  shift, and go to state 65
-
-
-State 63
+State 60
 
    18 macro: LPAREN DEF LPAREN variable LISTR LPAREN top . LISTR LISTR
 
-    LISTR  shift, and go to state 66
+    LISTR  shift, and go to state 62
 
 
-State 64
+State 61
 
    26 if: IF LISTL top LISTR LPAREN top LISTR LPAREN . top LISTR
 
@@ -955,61 +950,48 @@ State 64
     BOOL    shift, and go to state 2
     STR     shift, and go to state 3
     VAR     shift, and go to state 4
-    ADD     shift, and go to state 5
-    SUB     shift, and go to state 6
-    MUL     shift, and go to state 7
-    DIV     shift, and go to state 8
-    IF      shift, and go to state 9
-    LISTL   shift, and go to state 10
-    LPAREN  shift, and go to state 11
-    DEF     shift, and go to state 12
+    LAMBDA  shift, and go to state 5
+    ADD     shift, and go to state 6
+    SUB     shift, and go to state 7
+    MUL     shift, and go to state 8
+    DIV     shift, and go to state 9
+    IF      shift, and go to state 10
+    LISTL   shift, and go to state 11
+    LPAREN  shift, and go to state 12
+    DEF     shift, and go to state 13
 
-    top          go to state 67
-    macro        go to state 16
-    application  go to state 17
-    lambda       go to state 18
-    name         go to state 19
-    bool         go to state 20
-    if           go to state 21
-    variable     go to state 22
-
-
-State 65
-
-   21 lambda: LPAREN LAMBDA LPAREN variable LISTR LPAREN top LISTR . LISTR
-
-    LISTR  shift, and go to state 68
+    top          go to state 63
+    macro        go to state 17
+    application  go to state 18
+    lambda       go to state 19
+    name         go to state 20
+    bool         go to state 21
+    if           go to state 22
+    variable     go to state 23
 
 
-State 66
+State 62
 
    18 macro: LPAREN DEF LPAREN variable LISTR LPAREN top LISTR . LISTR
 
-    LISTR  shift, and go to state 69
+    LISTR  shift, and go to state 64
 
 
-State 67
+State 63
 
    26 if: IF LISTL top LISTR LPAREN top LISTR LPAREN top . LISTR
 
-    LISTR  shift, and go to state 70
+    LISTR  shift, and go to state 65
 
 
-State 68
-
-   21 lambda: LPAREN LAMBDA LPAREN variable LISTR LPAREN top LISTR LISTR .
-
-    $default  reduce using rule 21 (lambda)
-
-
-State 69
+State 64
 
    18 macro: LPAREN DEF LPAREN variable LISTR LPAREN top LISTR LISTR .
 
     $default  reduce using rule 18 (macro)
 
 
-State 70
+State 65
 
    26 if: IF LISTL top LISTR LPAREN top LISTR LPAREN top LISTR .
 

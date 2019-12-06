@@ -68,7 +68,7 @@ application : LPAREN top top LISTR { node **children = (node**)malloc(sizeof(nod
 ;
 
 // for a lambda, the parameter is the name
-lambda : LPAREN LAMBDA LPAREN variable LISTR LPAREN top LISTR LISTR {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $4; children[1] = $7; char *name = $4->name; $$ = insertNode(-1, LAMBDANODE, name, 2, children); }
+lambda : LAMBDA variable top {  node **children = (node**)malloc(sizeof(node*) * 2); children[0] = $2; children[1] = $3; char *name = $2->name; $$ = insertNode(-1, LAMBDANODE, name, 2, children); }
 ;
  
 name : STR { char *insertName = $1; printf("Hit name production %s\n",insertName); $$ = insertNode(-1, STRNODE, insertName, 0, NULL); }

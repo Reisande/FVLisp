@@ -1,2 +1,2 @@
 (def a (lambda x (+ x x)))
-(a 7)
+(a 3)

@@ -1,0 +1,1 @@
+((lambda z (z 16)) (lambda y (* y y)))

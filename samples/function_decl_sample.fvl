@@ -1,1 +1,1 @@
-(def a (lambda (x) (+ x x)))
+(def a (lambda x (+ x x)))

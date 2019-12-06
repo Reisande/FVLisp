@@ -792,7 +792,7 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 #line 18 "scanner_lexer.l"
-{ printf("hit\n"); return DEF; }
+{ return DEF; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
