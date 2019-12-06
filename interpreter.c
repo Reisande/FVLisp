@@ -218,6 +218,7 @@ environment *process(node *root, stateNode *state) {
 
 	case DEFNODE:
       returnEnvironment = processDef(root, state);
+	  memcpy(returnVal, returnEnvironment->Val, sizeof(value));
       break;
 
 	case IFNODE:
