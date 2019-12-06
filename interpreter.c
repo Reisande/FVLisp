@@ -25,11 +25,18 @@ int checkExistingNames(char *argName, stateNode *state) {
 
 stateNode *expandState(char *argName, value *insertValue, stateNode *currentState) {
   stateNode *newNode = (stateNode *) malloc(sizeof(stateNode));
+
   newNode->Val = (value *)malloc(sizeof(value));
   newNode->Val = insertValue;
+  if(insertValue->valueType == lambdaVal) {
+	memcpy(((node *)(newNode->Val->pVal))->children, insertValue,
+		   sizeof(node) * ((node *)(newNode->Val->pVal))->numChildren);
+  }
   newNode->name = (char *) malloc(strlen(argName) + 1);
+
   strcpy(newNode->name, argName);
   newNode->next = currentState;
+
   return newNode;
 }
 
@@ -138,13 +145,22 @@ value *processLambdaApplication(node *root, value *argument, stateNode *state) {
 	// actually, this should only happen for a lambda/function application, not an
 	// anonymous function macro. So I need to make a separate processLambda and
 	// processApplication
-	stateNode *newState = expandState(root->children[0]->children[0]->name, argument, state);
+	value *checkValue = malloc(sizeof(value));
+	// checks if the node is a lambda or a function which has been previously defined
+	if(root->children[0]->nodeType == VARNODE) {
+	  checkValue = findValueInState(root->children[0]->name, state);
+	}
+	else {
+	  (checkValue->pVal) = root->children[0];
+	}
+	node *lambdaNode = ((node *)((value *)(checkValue))->pVal);
+	stateNode *newState = expandState(lambdaNode->children[0]->name, argument, state);
 	value *returnValue = (value *)malloc(sizeof(value));
-	value *resultOfProcess = (process(root->children[0]->children[1], newState)->Val);
+	value *resultOfProcess = (process(lambdaNode->children[1], newState)->Val);
 	if(resultOfProcess != NULL) {
 	  *returnValue = *resultOfProcess;
 	}
-	removeValueFromState(root->children[0]->children[0]->name, newState);
+	removeValueFromState(lambdaNode->children[0]->name, newState);
 	return returnValue;
   }
   else {
@@ -219,6 +235,7 @@ environment *process(node *root, stateNode *state) {
 	case DEFNODE:
       returnEnvironment = processDef(root, state);
 	  memcpy(returnVal, returnEnvironment->Val, sizeof(value));
+	  
       break;
 
 	case IFNODE:

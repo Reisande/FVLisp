@@ -14,13 +14,6 @@ typedef struct listNode {
   char * name;
 } listNode;
 
-typedef struct lambdaNode {
-	// the body of the arguments
-	node *body; 
-	// the single argument. Multiple arguments could be implemented as multiple nested lambdas
-	char *argument;
-} lambdaNode;											
-
 typedef struct stateNode {
   char *name;
   value *Val;
