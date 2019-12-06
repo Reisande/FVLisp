@@ -1,2 +1,0 @@
-(def a (+ a a))
-(def b (b 5))
